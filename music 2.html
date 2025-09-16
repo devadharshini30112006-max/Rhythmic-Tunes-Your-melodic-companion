@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NM Music + Image Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      min-height: 100vh;
+      margin: 24px;
+      align-items: start;
+      background: linear-gradient(135deg,#f6f9ff,#eef7f2);
+      color: #111827;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(16,24,40,0.06);
+      border: 1px solid rgba(15,23,42,0.04);
+    }
+    header h1 { margin: 0 0 6px; font-size: 20px }
+    header p { margin:0; color: #555; font-size: 13px }
+    #art {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: block;
+    }
+    .controls {
+      display:flex;
+      gap:8px;
+      margin-top: 12px;
+      align-items:center;
+    }
+    button {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      background: linear-gradient(180deg,#1f6feb,#1158d8);
+      color: white;
+      box-shadow: 0 6px 16px rgba(17,24,39,0.12);
+      transition: background 0.2s ease;
+    }
+    button:hover { background: linear-gradient(180deg,#2b77f3,#0f4fc7); }
+    input[type="range"] { width: 140px; }
+    .sidebar { position: sticky; top: 24px; height: fit-content;}
+    .meta { font-size:13px; color:#444; margin-top:8px }
+    footer { margin-top:12px; font-size:12px; color:#666 }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>NM Tunes Player</h1>
+      <p>Play your favorite track with this simple player.</p>
+    </header>
+
+    <!-- Image -->
+    <img id="art" src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=1200&q=80&auto=format&fit=crop" alt="Artwork">
+
+    <div class="meta">Tip: replace the <code>&lt;img&gt;</code> src with your own image path (local file or URL).</div>
+
+    <section style="margin-top:14px;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div>
+          <div class="controls">
+            <button id="playBtn">Play</button>
+            <button id="stopBtn">Stop</button>
+          </div>
+          <div style="margin-top:10px;">
+            <label>Tempo <span id="tempoVal">1.0</span>x</label><br>
+            <input id="tempo" type="range" min="0.5" max="2" step="0.1" value="1">
+          </div>
+        </div>
+
+        <div>
+          <label>Volume</label><br>
+          <input id="vol" type="range" min="0" max="1" step="0.01" value="0.25">
+        </div>
+
+        <div>
+          <label>Mode</label><br>
+          <select id="wave">
+            <option value="normal">Normal</option>
+            <option value="chipmunk">Chipmunk</option>
+            <option value="deep">Deep</option>
+          </select>
+        </div>
+      </div>
+
+      <footer>Built with HTML5 Audio — click Play to start music.</footer>
+    </section>
+  </main>
+
+  <aside class="card sidebar">
+    <h3>Melody & Notes</h3>
+    <p>This demo uses a regular audio file instead of WebAudio synthesis.</p>
+    <pre style="font-size:13px; background:#fafafa; padding:10px; border-radius:6px;">Replace the audio src with your own file!</pre>
+  </aside>
+
+  <!-- Hidden Audio Element -->
+  <audio id="player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+<script>
+const audio = document.getElementById('player');
+const playBtn = document.getElementById('playBtn');
+const stopBtn = document.getElementById('stopBtn');
+const tempoSlider = document.getElementById('tempo');
+const tempoVal = document.getElementById('tempoVal');
+const volSlider = document.getElementById('vol');
+const waveSelect = document.getElementById('wave');
+
+// Play & Stop
+playBtn.addEventListener('click', () => audio.play());
+stopBtn.addEventListener('click', () => { audio.pause(); audio.currentTime = 0; });
+
+// Volume control
+volSlider.addEventListener('input', () => { audio.volume = volSlider.value; });
+
+// Playback speed (Tempo)
+tempoSlider.addEventListener('input', () => {
+  audio.playbackRate = tempoSlider.value;
+  tempoVal.textContent = tempoSlider.value;
+});
+
+// Mode selector (fun speed effects)
+waveSelect.addEventListener('change', () => {
+  if (waveSelect.value === 'chipmunk') {
+    audio.playbackRate = 1.5;
+  } else if (waveSelect.value === 'deep') {
+    audio.playbackRate = 0.75;
+  } else {
+    audio.playbackRate = tempoSlider.value;
+  }
+  tempoVal.textContent = audio.playbackRate.toFixed(2);
+});
+</script>
+</body>
+</html>
